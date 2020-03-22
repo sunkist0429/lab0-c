@@ -58,15 +58,25 @@ bool q_insert_head(queue_t* q, char* s)
     /* What if either call to malloc returns NULL? */
     if(q == NULL) return false;
 
+    // new element
     list_ele_t* newh = malloc(sizeof(list_ele_t));
     if (newh == NULL) return false;
-
-    newh->next = q->head;
     newh->value = malloc(sizeof(char*));
     if (newh->value == NULL) return false;
     strcpy(newh->value, s);
+    newh->next = NULL;
 
-    q->head = newh;
+    if (q->tail == NULL)
+    {
+        q->tail = newh;
+    }
+    if (q->head == NULL)
+    {
+        q->head = newh;
+    }else{
+        newh->next = q->head;
+        q->head = newh;
+    }
     q->size++;
 
     return true;
