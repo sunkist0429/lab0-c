@@ -27,18 +27,12 @@ void q_free(queue_t* q)
     /* TODO: How about freeing the list elements and the strings? */
     if(q == NULL) return;
 
-    if (q->size == 0)
-    {
-        free(q);
-        return;
-    }
-
-    while(q->head != NULL)
-    {
-        free(q->head->value);
-        list_ele_t* tmp_head = q->head;
-        q->head = q->head->next;
-        free(tmp_head);
+    list_ele_t* traversal = q->head;
+    while (traversal != NULL){
+        list_ele_t* cur = traversal;
+        traversal = cur->next;
+        free(cur->value);
+        free(cur);
     }
 
     /* Free queue structure */
@@ -66,10 +60,7 @@ bool q_insert_head(queue_t* q, char* s)
     strcpy(newh->value, s);
     newh->next = NULL;
 
-    if (q->tail == NULL)
-    {
-        q->tail = newh;
-    }
+    if (q->tail == NULL)    q->tail = newh;
     if (q->head == NULL)
     {
         q->head = newh;
@@ -145,6 +136,8 @@ bool q_remove_head(queue_t* q, char* sp, size_t bufsize)
  */
 int q_size(queue_t* q)
 {
+    if(q == NULL) return 0;
+
     return q->size;
 }
 
@@ -157,8 +150,33 @@ int q_size(queue_t* q)
  */
 void q_reverse(queue_t* q)
 {
-    /* TODO: You need to write the code for this function */
-    /* TODO: Remove the above comment when you are about to implement. */
+    if(q == NULL) return;
+    if(q->size < 2) return;
+
+    list_ele_t *old_head = q -> head;
+    list_ele_t *old_tail = q -> tail;
+    list_ele_t *a = q -> head;
+    list_ele_t *b = q -> head -> next;
+    list_ele_t *c = q -> head -> next -> next;
+
+    b -> next = a;
+    a -> next = NULL;
+    while(c != NULL) {
+        a = b;
+        b = c;
+        c = c -> next;
+        b -> next = a;
+    }
+    q -> head = old_tail;
+    q -> tail = old_head;
+}
+
+void swap(list_ele_t* a, list_ele_t* b)
+{
+    char* temp;
+    temp = a->value;
+    a->value = b->value;
+    b->value = temp;
 }
 
 /*
@@ -168,6 +186,27 @@ void q_reverse(queue_t* q)
  */
 void q_sort(queue_t* q)
 {
-    /* TODO: You need to write the code for this function */
-    /* TODO: Remove the above comment when you are about to implement. */
+    if (q == NULL)  return;
+
+    /* Bubble sort the given linked list */
+    int swapped;
+    list_ele_t* ptr1;
+    list_ele_t* lptr = NULL;
+
+    do
+    {
+        swapped = 0;
+        ptr1 = q->head;
+        while (ptr1->next != lptr)
+        {
+            if (ptr1->value > ptr1->next->value)
+            {
+                swap(ptr1, ptr1->next);
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    }
+    while (swapped);
 }
