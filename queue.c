@@ -243,4 +243,11 @@ void q_sort(queue_t *q)
 
     // merge sort
     q->head = mergeSortList(q->head);
+
+    // determine the tail
+    list_ele_t *node = q->head;
+    while (node->next) {
+        node = node->next;
+    }
+    q->tail = node;
 }
